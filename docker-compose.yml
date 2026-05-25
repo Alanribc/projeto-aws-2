@@ -8,11 +8,11 @@ services:
       - "3000:3000"
 
     environment:
-      DB_HOST: cloud-db.criulccdkzwr.us-east-1.rds.amazonaws.com
-      DB_PORT: 5432
-      DB_USER: administrador
-      DB_PASSWORD: ProjetoAWS2
-      DB_NAME: cloud_db
+      DB_HOST=cloud-db.criulccdkzwr.us-east-1.rds.amazonaws.com
+      DB_PORT=5432
+      DB_USER=administrador
+      DB_PASSWORD=ProjetoAWS2
+      DB_NAME=cloud_db
 
   frontend:
     build: ./frontend
