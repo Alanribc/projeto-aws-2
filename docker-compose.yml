@@ -1,20 +1,5 @@
 services:
 
-  postgres:
-    image: postgres:16
-    container_name: postgres-cloud
-
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin123
-      POSTGRES_DB: cloud_db
-
-    ports:
-      - "5432:5432"
-
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
   backend:
     build: ./backend
     container_name: backend-api
@@ -23,14 +8,11 @@ services:
       - "3000:3000"
 
     environment:
-      DB_HOST: postgres
+      DB_HOST: cloud-db.criulccdkzwr.us-east-1.rds.amazonaws.com
       DB_PORT: 5432
-      DB_USER: admin
-      DB_PASSWORD: admin123
+      DB_USER: administrador
+      DB_PASSWORD: ProjetoAWS2
       DB_NAME: cloud_db
-
-    depends_on:
-      - postgres
 
   frontend:
     build: ./frontend
@@ -41,6 +23,3 @@ services:
 
     depends_on:
       - backend
-
-volumes:
-  postgres_data:
