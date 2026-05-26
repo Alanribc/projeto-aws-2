@@ -18,6 +18,7 @@ const pool = new Pool({
 });
 
 
+
 app.get('/', (req, res) => {
     res.json({
         mensagem: 'API funcionando'
