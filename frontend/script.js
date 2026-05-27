@@ -1,38 +1,53 @@
-const apiURL = 'http://localhost:3000/items';
+const apiURL = 'https://e953zoeque.execute-api.us-east-1.amazonaws.com/items';
+
+const reportURL = 'https://e953zoeque.execute-api.us-east-1.amazonaws.com/report';
 
 const lista = document.getElementById('lista');
+
 const form = document.getElementById('itemForm');
+
 const inputNome = document.getElementById('nome');
 
 let editandoId = null;
 
+
 async function carregarItens() {
 
-    const response = await fetch(apiURL);
+    try {
 
-    const items = await response.json();
+        const response = await fetch(apiURL);
 
-    lista.innerHTML = '';
+        const items = await response.json();
 
-    items.forEach(item => {
+        lista.innerHTML = '';
 
-        const li = document.createElement('li');
+        items.forEach(item => {
 
-        li.innerHTML = `
-            ${item.nome}
+            const li = document.createElement('li');
 
-            <button onclick="editarItem(${item.id}, '${item.nome}')">
-                Editar
-            </button>
+            li.innerHTML = `
+                ${item.nome}
 
-            <button onclick="deletarItem(${item.id})">
-                Deletar
-            </button>
-        `;
+                <button onclick="editarItem(${item.id}, '${item.nome}')">
+                    Editar
+                </button>
 
-        lista.appendChild(li);
-    });
+                <button onclick="deletarItem(${item.id})">
+                    Deletar
+                </button>
+            `;
+
+            lista.appendChild(li);
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert('Erro ao carregar itens');
+    }
 }
+
 
 form.addEventListener('submit', async (e) => {
 
@@ -40,39 +55,50 @@ form.addEventListener('submit', async (e) => {
 
     const nome = inputNome.value;
 
-    if (editandoId) {
+    try {
 
-        await fetch(`${apiURL}/${editandoId}`, {
+        if (editandoId) {
 
-            method: 'PUT',
+            await fetch(`${apiURL}/${editandoId}`, {
 
-            headers: {
-                'Content-Type': 'application/json'
-            },
+                method: 'PUT',
 
-            body: JSON.stringify({ nome })
-        });
+                headers: {
+                    'Content-Type': 'application/json'
+                },
 
-        editandoId = null;
+                body: JSON.stringify({ nome })
+            });
 
-    } else {
+            editandoId = null;
 
-        await fetch(apiURL, {
+        } else {
 
-            method: 'POST',
+            await fetch(apiURL, {
 
-            headers: {
-                'Content-Type': 'application/json'
-            },
+                method: 'POST',
 
-            body: JSON.stringify({ nome })
-        });
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({ nome })
+            });
+        }
+
+        form.reset();
+
+        carregarItens();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert('Erro ao salvar item');
     }
-
-    form.reset();
-
-    carregarItens();
 });
+
+
 
 function editarItem(id, nome) {
 
@@ -81,13 +107,55 @@ function editarItem(id, nome) {
     editandoId = id;
 }
 
+
 async function deletarItem(id) {
 
-    await fetch(`${apiURL}/${id}`, {
-        method: 'DELETE'
-    });
+    try {
 
-    carregarItens();
+        await fetch(`${apiURL}/${id}`, {
+
+            method: 'DELETE'
+        });
+
+        carregarItens();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert('Erro ao deletar item');
+    }
 }
+
+
+async function buscarReport() {
+
+    try {
+
+        const response = await fetch(reportURL);
+
+        const data = await response.json();
+
+        alert(JSON.stringify(data, null, 2));
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert('Erro ao buscar relatório');
+    }
+}
+
+const reportButton = document.createElement('button');
+
+reportButton.innerText = 'Ver Report';
+
+reportButton.style.marginTop = '20px';
+
+reportButton.onclick = buscarReport;
+
+document.querySelector('.container').appendChild(reportButton);
+
+
 
 carregarItens();
